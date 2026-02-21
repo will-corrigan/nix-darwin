@@ -8,6 +8,10 @@
     home.homeDirectory = lib.mkForce "/Users/will";
     home.stateVersion = "24.11";
 
+    home.sessionVariables = {
+      SSH_AUTH_SOCK = "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock";
+    };
+
     programs.git = {
       enable = true;
       settings = {
@@ -16,6 +20,10 @@
         init.defaultBranch = "main";
         push.autoSetupRemote = true;
         pull.rebase = true;
+        commit.gpgsign = true;
+        gpg.format = "ssh";
+        gpg.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+        user.signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHx5824VO9jx/mjYyVW8dcxywMn4dSk5KEbD3Eq2kCJ8";
       };
     };
 
