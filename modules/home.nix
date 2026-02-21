@@ -102,5 +102,9 @@
     home.file.".config/zed/settings.json" = {
       source = ../dotfiles/zed-settings.jsonc;
     };
+
+    home.file.".config/mise/config.toml" = {
+      source = ../dotfiles/mise-config.toml;
+    };
   };
 }

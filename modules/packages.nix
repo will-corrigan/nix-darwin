@@ -14,7 +14,6 @@
     mise
     nixd
     nixfmt
-    nodejs_24
     p7zip
     ripgrep
     sqlite
