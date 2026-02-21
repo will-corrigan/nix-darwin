@@ -2,12 +2,9 @@
 {
   environment.systemPackages = with pkgs; [
     _1password-cli
-    bat
     bruno
-    direnv
     fd
     flyctl
-    fzf
     gcc
     gh
     google-cloud-sdk
@@ -20,7 +17,6 @@
     openssh
     ripgrep
     sqlite
-    starship
     terraform
     terraform-ls
     tree
