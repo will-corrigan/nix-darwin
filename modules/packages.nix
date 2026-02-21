@@ -8,6 +8,7 @@
     flyctl
     gcc
     gh
+    gitleaks
     google-cloud-sdk
     jq
     kubectl
