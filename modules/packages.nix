@@ -2,6 +2,7 @@
 {
   environment.systemPackages = with pkgs; [
     _1password-cli
+    btop
     bruno
     fd
     flyctl
@@ -14,13 +15,15 @@
     nixd
     nixfmt
     nodejs_24
-    openssh
+    p7zip
     ripgrep
     sqlite
     terraform
     terraform-ls
+    tldr
     tree
     vim
+    wget
     yq
   ];
 }

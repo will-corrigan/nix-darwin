@@ -41,6 +41,17 @@
       autohide = true;
       show-recents = false;
       tilesize = 48;
+      persistent-apps = [
+        "/System/Applications/System Settings.app"
+        "/Applications/Google Chrome.app"
+        "/Applications/1Password.app"
+        "/Applications/Visual Studio Code.app"
+        "/Applications/Slack.app"
+        "/Applications/Discord.app"
+        "/Applications/Spotify.app"
+        "/Applications/Ghostty.app"
+        "/Applications/Zed.app"
+      ];
     };
 
     trackpad.Clicking = true;

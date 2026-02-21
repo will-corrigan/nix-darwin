@@ -88,14 +88,7 @@
         plugins = [ "git" "common-aliases" ];
       };
       shellAliases = {
-        ga = "git add";
-        gc = "git commit";
-        gco = "git checkout";
-        gd = "git diff";
-        gl = "git log --oneline";
-        gp = "git push";
-        gpl = "git pull";
-        gs = "git status";
+        rebuild = "sudo darwin-rebuild switch --flake /etc/nix-darwin";
       };
       initContent = ''
         eval "$(mise activate zsh)"
