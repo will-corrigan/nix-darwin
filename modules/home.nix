@@ -22,6 +22,32 @@
     programs.starship = {
       enable = true;
       enableZshIntegration = true;
+      settings = {
+        username = {
+          show_always = true;
+          format = "[$user]($style) ";
+        };
+        directory = {
+          truncation_length = 3;
+          truncate_to_repo = true;
+        };
+        git_branch = {
+          format = "[$symbol$branch(:$remote_branch)]($style) ";
+        };
+        git_status = {
+          format = "([$all_status$ahead_behind]($style) )";
+        };
+        nodejs = {
+          format = "[$symbol($version)]($style) ";
+        };
+        nix_shell = {
+          format = "[$symbol$state]($style) ";
+        };
+        character = {
+          success_symbol = "[❯](bold green)";
+          error_symbol = "[❯](bold red)";
+        };
+      };
     };
 
     programs.direnv = {
@@ -41,6 +67,10 @@
       enable = true;
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
+      oh-my-zsh = {
+        enable = true;
+        plugins = [ "git" "common-aliases" ];
+      };
       shellAliases = {
         ga = "git add";
         gc = "git commit";
@@ -56,7 +86,7 @@
       '';
     };
 
-    home.file.".config/ghostty/config" = {
+    home.file."Library/Application Support/com.mitchellh.ghostty/config" = {
       source = ../dotfiles/ghostty-config;
     };
 
