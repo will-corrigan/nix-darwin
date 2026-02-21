@@ -26,6 +26,7 @@
         rebuild = "sudo darwin-rebuild switch --flake /etc/nix-darwin";
       };
       initContent = ''
+        export PATH="$HOME/.rd/bin:$PATH"
         eval "$(mise activate zsh)"
       '';
     };
