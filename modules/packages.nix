@@ -15,6 +15,7 @@
     mise
     nixd
     nixfmt
+    python3Packages.pygments
     p7zip
     ripgrep
     sqlite
