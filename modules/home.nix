@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 {
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
@@ -12,19 +12,22 @@
       SSH_AUTH_SOCK = "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock";
     };
 
-    programs.git = {
+    # ── Shell ──────────────────────────────────────────────────────────
+
+    programs.zsh = {
       enable = true;
-      settings = {
-        user.name = "Will Corrigan";
-        user.email = "will-corrigan@users.noreply.github.com";
-        init.defaultBranch = "main";
-        push.autoSetupRemote = true;
-        pull.rebase = true;
-        commit.gpgsign = true;
-        gpg.format = "ssh";
-        gpg.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
-        user.signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHx5824VO9jx/mjYyVW8dcxywMn4dSk5KEbD3Eq2kCJ8";
+      autosuggestion.enable = true;
+      syntaxHighlighting.enable = true;
+      oh-my-zsh = {
+        enable = true;
+        plugins = [ "git" "common-aliases" ];
       };
+      shellAliases = {
+        rebuild = "sudo darwin-rebuild switch --flake /etc/nix-darwin";
+      };
+      initContent = ''
+        eval "$(mise activate zsh)"
+      '';
     };
 
     programs.starship = {
@@ -71,6 +74,23 @@
 
     programs.bat.enable = true;
 
+    # ── Git & SSH ──────────────────────────────────────────────────────
+
+    programs.git = {
+      enable = true;
+      settings = {
+        user.name = "Will Corrigan";
+        user.email = "will-corrigan@users.noreply.github.com";
+        user.signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHx5824VO9jx/mjYyVW8dcxywMn4dSk5KEbD3Eq2kCJ8";
+        init.defaultBranch = "main";
+        push.autoSetupRemote = true;
+        pull.rebase = true;
+        commit.gpgsign = true;
+        gpg.format = "ssh";
+        gpg.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+      };
+    };
+
     programs.ssh = {
       enable = true;
       enableDefaultConfig = false;
@@ -79,20 +99,15 @@
       };
     };
 
-    programs.zsh = {
-      enable = true;
-      autosuggestion.enable = true;
-      syntaxHighlighting.enable = true;
-      oh-my-zsh = {
-        enable = true;
-        plugins = [ "git" "common-aliases" ];
-      };
-      shellAliases = {
-        rebuild = "sudo darwin-rebuild switch --flake /etc/nix-darwin";
-      };
-      initContent = ''
-        eval "$(mise activate zsh)"
-      '';
+    # ── Dotfiles ───────────────────────────────────────────────────────
+
+    home.file.".config/tmux/tmux.conf" = {
+      source = ../dotfiles/tmux.conf;
+    };
+
+    home.file.".config/tmux/plugins/catppuccin/tmux" = {
+      source = pkgs.tmuxPlugins.catppuccin.src;
+      recursive = true;
     };
 
     home.file."Library/Application Support/com.mitchellh.ghostty/config" = {

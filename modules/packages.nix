@@ -20,7 +20,9 @@
     sqlite
     terraform
     terraform-ls
+    tilt
     tldr
+    tmux
     tree
     vim
     wget

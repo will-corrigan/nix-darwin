@@ -1,20 +1,28 @@
 { ... }:
 {
-  nixpkgs.config.allowUnfree = true;
+  # ── Nix ────────────────────────────────────────────────────────────
 
+  nixpkgs.config.allowUnfree = true;
   nix.settings.experimental-features = "nix-command flakes";
+
+  # ── Shell ──────────────────────────────────────────────────────────
 
   programs.zsh.enable = true;
 
+  # ── Security ───────────────────────────────────────────────────────
+
   security.pam.services.sudo_local.touchIdAuth = true;
+
+  # ── Keyboard ───────────────────────────────────────────────────────
 
   system.keyboard = {
     enableKeyMapping = true;
     remapCapsLockToEscape = true;
   };
 
+  # ── macOS Defaults ─────────────────────────────────────────────────
+
   system.defaults = {
-    # Disable Spotlight shortcut (conflicts with other tools)
     CustomUserPreferences."com.apple.symbolichotkeys".AppleSymbolicHotKeys."64".enabled = false;
 
     NSGlobalDomain = {
