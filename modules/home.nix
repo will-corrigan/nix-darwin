@@ -1,11 +1,19 @@
-{ lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  user = config.system.primaryUser;
+in
 {
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
 
-  home-manager.users.will = {
-    home.username = "will";
-    home.homeDirectory = lib.mkForce "/Users/will";
+  home-manager.users.${user} = {
+    home.username = user;
+    home.homeDirectory = lib.mkForce "/Users/${user}";
     home.stateVersion = "24.11";
 
     home.sessionVariables = {
@@ -20,7 +28,10 @@
       syntaxHighlighting.enable = true;
       oh-my-zsh = {
         enable = true;
-        plugins = [ "git" "common-aliases" ];
+        plugins = [
+          "git"
+          "common-aliases"
+        ];
       };
       shellAliases = {
         rebuild = "sudo darwin-rebuild switch --flake /etc/nix-darwin";
