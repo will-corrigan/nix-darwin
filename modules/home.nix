@@ -15,7 +15,6 @@ in
     home.username = user;
     home.homeDirectory = lib.mkForce "/Users/${user}";
     home.stateVersion = "24.11";
-    home.backupFileExtension = "backup";
 
     home.sessionVariables = {
       SSH_AUTH_SOCK = "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock";
