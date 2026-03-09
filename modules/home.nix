@@ -10,6 +10,7 @@ in
 {
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
+  home-manager.backupFileExtension = "backup";
 
   home-manager.users.${user} = {
     home.username = user;
