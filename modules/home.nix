@@ -15,6 +15,7 @@ in
     home.username = user;
     home.homeDirectory = lib.mkForce "/Users/${user}";
     home.stateVersion = "24.11";
+    home.backupFileExtension = "backup";
 
     home.sessionVariables = {
       SSH_AUTH_SOCK = "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock";
@@ -35,10 +36,15 @@ in
       };
       shellAliases = {
         rebuild = "sudo darwin-rebuild switch --flake /etc/nix-darwin";
+        ls = "eza";
+        la = "eza -la --icons";
+        ll = "eza -la --icons --git";
+        lt = "eza -T -L 2 --icons";
       };
       initContent = ''
         export PATH="$HOME/.rd/bin:$PATH"
         eval "$(mise activate zsh)"
+        export GITHUB_TOKEN=$(op read "op://Employee/Github Token/credential")
       '';
     };
 
@@ -80,6 +86,11 @@ in
     };
 
     programs.fzf = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
+    programs.zoxide = {
       enable = true;
       enableZshIntegration = true;
     };

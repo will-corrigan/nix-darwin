@@ -2,15 +2,20 @@
 {
   environment.systemPackages = with pkgs; [
     _1password-cli
+    awscli2
     btop
     bruno
+    eza
     fd
     flyctl
     gcc
     gh
+    git-credential-manager
     gitleaks
+    glow
     google-cloud-sdk
     jq
+    k9s
     kubectl
     mise
     nixd
@@ -28,5 +33,6 @@
     vim
     wget
     yq
+    zoxide
   ];
 }
