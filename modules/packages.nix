@@ -3,16 +3,11 @@
   environment.systemPackages = with pkgs; [
     _1password-cli
     awscli2
-    btop
     bruno
     eza
     fd
-    ffmpeg
     flyctl
-    gcc
-    gh
-    git-credential-manager
-    gitleaks
+
     glow
     google-cloud-sdk
     jq
@@ -20,20 +15,17 @@
     kubectl
     mise
     nixd
+    nh
     nixfmt
-    python3Packages.pygments
     p7zip
     ripgrep
     sqlite
-    terraform
     terraform-ls
-    tilt
     tldr
     tmux
     tree
     vim
     wget
     yq
-    zoxide
   ];
 }
