@@ -7,6 +7,7 @@
     bruno
     eza
     fd
+    ffmpeg
     flyctl
     gcc
     gh

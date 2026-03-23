@@ -40,6 +40,7 @@ in
         la = "eza -la --icons";
         ll = "eza -la --icons --git";
         lt = "eza -T -L 2 --icons";
+        kube-stg = "aws login && aws eks update-kubeconfig --name contextfab-stg-infra-eks-cluster --region eu-west-1 --alias stg";
       };
       initContent = ''
         export PATH="$HOME/.rd/bin:$PATH"

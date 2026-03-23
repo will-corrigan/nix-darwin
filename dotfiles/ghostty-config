@@ -1,3 +1,2 @@
 font-family = JetBrainsMono Nerd Font
 theme = Catppuccin Mocha
-command = /run/current-system/sw/bin/tmux new-session -A -s main
