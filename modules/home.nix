@@ -361,6 +361,10 @@ in
       source = ../dotfiles/zed-settings.jsonc;
     };
 
+    home.file.".config/zed/keymap.json" = {
+      source = ../dotfiles/zed-keymap.json;
+    };
+
     home.file.".config/mise/config.toml" = {
       source = ../dotfiles/mise-config.toml;
     };
