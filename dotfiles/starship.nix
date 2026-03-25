@@ -51,7 +51,7 @@
         disabled = false;
         style = "bold text";
         symbols = {
-          Macos = "\u{f179} ";
+          Macos = " ";
         };
       };
 
@@ -71,18 +71,18 @@
         truncate_to_repo = true;
         style = "bold blue";
         format = "[$path]($style)[$read_only]($read_only_style) ";
-        read_only = " \u{f023}";
+        read_only = " ";
         substitutions = {
-          Documents = "\u{f0219} Documents";
-          Downloads = "\u{f019} Downloads";
-          Developer = "\u{e26f} Developer";
+          Documents = "󰈙 Documents";
+          Downloads = " Downloads";
+          Developer = " Developer";
         };
       };
 
       # Git
       git_branch = {
         format = "[$symbol$branch(:$remote_branch)]($style) ";
-        symbol = "\u{e0a0} ";
+        symbol = " ";
         truncation_length = 30;
         style = "bold purple";
       };
@@ -90,12 +90,12 @@
       git_status = {
         format = "([\\[$all_status$ahead_behind\\]]($style) )";
         style = "bold red";
-        ahead = "\u{2191}\${count}";
-        behind = "\u{2193}\${count}";
-        diverged = "\u{2195}\u{2191}\${ahead_count}\u{2193}\${behind_count}";
+        ahead = "↑\${count}";
+        behind = "↓\${count}";
+        diverged = "↕↑\${ahead_count}↓\${behind_count}";
         conflicted = "=\${count}";
-        deleted = "\u{2718}\${count}";
-        renamed = "\u{00bb}\${count}";
+        deleted = "✘\${count}";
+        renamed = "»\${count}";
         modified = "!\${count}";
         staged = "+\${count}";
         untracked = "?\${count}";
@@ -118,7 +118,7 @@
       kubernetes = {
         disabled = false;
         format = "[$symbol$context( \\($namespace\\))]($style) ";
-        symbol = "\u{2638} ";
+        symbol = "☸ ";
         style = "bold cyan";
         context_aliases = {
           "arn:aws:eks:eu-west-1:.*:cluster/contextfab-stg-infra-eks-cluster" = "stg";
@@ -129,26 +129,26 @@
       aws = {
         disabled = false;
         format = "[$symbol($profile)(\\($region\\))(\\[$duration\\])]($style) ";
-        symbol = "\u{e7ad} ";
+        symbol = " ";
         style = "bold yellow";
       };
 
       terraform = {
         format = "[$symbol$workspace]($style) ";
-        symbol = "\u{f1b2} ";
+        symbol = " ";
         style = "bold lavender";
       };
 
       docker_context = {
         format = "[$symbol$context]($style) ";
-        symbol = "\u{e7b0} ";
+        symbol = " ";
         style = "bold blue";
         only_with_files = true;
       };
 
       nix_shell = {
         format = "[$symbol$state( \\($name\\))]($style) ";
-        symbol = "\u{f313} ";
+        symbol = " ";
         style = "bold blue";
         impure_msg = "impure";
         pure_msg = "pure";
@@ -156,63 +156,63 @@
 
       container = {
         format = "[$symbol$name]($style) ";
-        symbol = "\u{e7b0} ";
+        symbol = " ";
         style = "bold red";
       };
 
       # Package
       package = {
         format = "[$symbol$version]($style) ";
-        symbol = "\u{f187} ";
+        symbol = " ";
         style = "bold peach";
       };
 
       # Languages
       golang = {
         format = "[$symbol($version)]($style) ";
-        symbol = "\u{e626} ";
+        symbol = " ";
         style = "bold cyan";
       };
 
       nodejs = {
         format = "[$symbol($version)]($style) ";
-        symbol = "\u{e718} ";
+        symbol = " ";
         style = "bold green";
       };
 
       python = {
         format = "[$symbol($version)( \\($virtualenv\\))]($style) ";
-        symbol = "\u{e235} ";
+        symbol = " ";
         style = "bold yellow";
       };
 
       rust = {
         format = "[$symbol($version)]($style) ";
-        symbol = "\u{e7a8} ";
+        symbol = " ";
         style = "bold red";
       };
 
       dotnet = {
         format = "[$symbol($version)]($style) ";
-        symbol = "\u{e77f} ";
+        symbol = " ";
         style = "bold lavender";
       };
 
       lua = {
         format = "[$symbol($version)]($style) ";
-        symbol = "\u{e620} ";
+        symbol = " ";
         style = "bold blue";
       };
 
       deno = {
         format = "[$symbol($version)]($style) ";
-        symbol = "\u{e628} ";
+        symbol = " ";
         style = "bold green";
       };
 
       zig = {
         format = "[$symbol($version)]($style) ";
-        symbol = "\u{e6a9} ";
+        symbol = " ";
         style = "bold yellow";
       };
 
@@ -221,14 +221,14 @@
         disabled = false;
         threshold = 75;
         format = "[$symbol\${ram_pct}]($style) ";
-        symbol = "\u{f0233} ";
+        symbol = "󰈳 ";
         style = "bold dimmed yellow";
       };
 
       battery = {
-        full_symbol = "\u{f240} ";
-        charging_symbol = "\u{f0e7} ";
-        discharging_symbol = "\u{f242} ";
+        full_symbol = " ";
+        charging_symbol = " ";
+        discharging_symbol = " ";
         format = "[$symbol$percentage]($style) ";
         display = [
           { threshold = 20; style = "bold red"; }
@@ -239,44 +239,44 @@
       sudo = {
         disabled = false;
         format = "[$symbol]($style)";
-        symbol = "\u{f09c} ";
+        symbol = " ";
         style = "bold yellow";
       };
 
       status = {
         disabled = false;
         format = "[$symbol$status]($style) ";
-        symbol = "\u{2717} ";
+        symbol = "✗ ";
         style = "bold red";
       };
 
       jobs = {
         format = "[$symbol$number]($style) ";
-        symbol = "\u{2726}";
+        symbol = "✦";
         threshold = 1;
       };
 
       # Duration & Time
       cmd_duration = {
         min_time = 2000;
-        format = "[\u{f253} $duration]($style) ";
+        format = "[ $duration]($style) ";
         style = "bold yellow";
       };
 
       time = {
         disabled = false;
-        format = "[\u{f017} $time]($style)";
+        format = "[ $time]($style)";
         style = "dimmed text";
         time_format = "%H:%M";
       };
 
       character = {
-        success_symbol = "[\u{276f}](bold green)";
-        error_symbol = "[\u{276f}](bold red)";
-        vimcmd_symbol = "[\u{276e}](bold green)";
-        vimcmd_replace_one_symbol = "[\u{276e}](bold lavender)";
-        vimcmd_replace_symbol = "[\u{276e}](bold lavender)";
-        vimcmd_visual_symbol = "[\u{276e}](bold yellow)";
+        success_symbol = "[❯](bold green)";
+        error_symbol = "[❯](bold red)";
+        vimcmd_symbol = "[❮](bold green)";
+        vimcmd_replace_one_symbol = "[❮](bold lavender)";
+        vimcmd_replace_symbol = "[❮](bold lavender)";
+        vimcmd_visual_symbol = "[❮](bold yellow)";
       };
 
       # Catppuccin Mocha palette
