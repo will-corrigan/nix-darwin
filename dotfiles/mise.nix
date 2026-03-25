@@ -6,6 +6,7 @@
     enableBashIntegration = false;
     enableZshIntegration = false;
     enableFishIntegration = false;
+    enableNushellIntegration = false;
     globalConfig = {
       tools = {
         node = "lts";
