@@ -1,16 +1,16 @@
-{ ... }:
+{ user, ... }:
 {
   programs.git = {
     enable = true;
     signing = {
-      key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHx5824VO9jx/mjYyVW8dcxywMn4dSk5KEbD3Eq2kCJ8";
+      key = user.sshKey;
       signByDefault = true;
       format = "ssh";
       signer = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
     };
     settings = {
-      user.name = "Will Corrigan";
-      user.email = "will-corrigan@users.noreply.github.com";
+      user.name = user.name;
+      user.email = user.email;
       init.defaultBranch = "main";
       push.autoSetupRemote = true;
       pull.rebase = true;

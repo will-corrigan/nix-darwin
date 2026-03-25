@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   programs.tmux = {
     enable = true;
@@ -9,18 +9,6 @@
     baseIndex = 1;
     terminal = "tmux-256color";
     historyLimit = 50000;
-    plugins = with pkgs.tmuxPlugins; [
-      {
-        plugin = catppuccin;
-        extraConfig = ''
-          set -g @catppuccin_flavor "mocha"
-          set -g @catppuccin_window_status_style "rounded"
-          set -g @catppuccin_window_text " #W"
-          set -g @catppuccin_window_current_text " #W"
-          set -g @catppuccin_date_time_text " %a %d %b %H:%M"
-        '';
-      }
-    ];
     extraConfig = ''
       setw -g pane-base-index 1
       set -g allow-rename off

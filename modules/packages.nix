@@ -11,9 +11,11 @@
     k9s
     kubectl
 
+    deadnix
     nixd
     nh
     nixfmt
+    statix
     p7zip
     ripgrep
     sqlite

@@ -1,15 +1,12 @@
-{ font, ... }:
+{ ... }:
 {
   programs.ghostty = {
     enable = true;
     package = null;
     settings = {
-      font-family = font.mono;
-      font-size = 14;
       font-thicken = true;
       adjust-cell-height = 2;
 
-      theme = "Catppuccin Mocha";
       background-opacity = 0.92;
       background-blur-radius = 20;
       cursor-style = "bar";

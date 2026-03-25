@@ -1,5 +1,5 @@
 {
-  description = "Will's nix-darwin system flake";
+  description = "Declarative macOS with nix-darwin, home-manager, and Stylix";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -7,6 +7,7 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    stylix.url = "github:nix-community/stylix";
   };
 
   outputs =
@@ -15,24 +16,10 @@
       nix-darwin,
       nixpkgs,
       home-manager,
+      stylix,
     }:
     let
-      fonts = {
-        jetbrains-mono = builtins.mapAttrs (_: v: v // { pkg = "jetbrains-mono"; }) {
-          default      = { name = "JetBrainsMono Nerd Font";   mono = "JetBrainsMono Nerd Font Mono"; };
-          no-ligatures = { name = "JetBrainsMonoNL Nerd Font"; mono = "JetBrainsMonoNL Nerd Font Mono"; };
-        };
-        monaspace = builtins.mapAttrs (_: v: v // { pkg = "monaspace"; }) {
-          neon    = { name = "MonaspiceNe Nerd Font"; mono = "MonaspiceNe Nerd Font Mono"; };
-          argon   = { name = "MonaspiceAr Nerd Font"; mono = "MonaspiceAr Nerd Font Mono"; };
-          xenon   = { name = "MonaspiceXe Nerd Font"; mono = "MonaspiceXe Nerd Font Mono"; };
-          krypton = { name = "MonaspiceKr Nerd Font"; mono = "MonaspiceKr Nerd Font Mono"; };
-          radon   = { name = "MonaspiceRn Nerd Font"; mono = "MonaspiceRn Nerd Font Mono"; };
-        };
-        mononoki = { name = "mononoki Nerd Font";    mono = "mononoki Nerd Font Mono";    pkg = "mononoki"; };
-        noto     = { name = "NotoSansMono Nerd Font"; mono = "NotoSansMono Nerd Font Mono"; pkg = "noto"; };
-      };
-      font = fonts.monaspace.neon;
+      fonts = import ./fonts.nix;
       direnvOverlay = final: prev: {
         direnv = prev.direnv.overrideAttrs (old: {
           postPatch = (old.postPatch or "") + ''
@@ -42,22 +29,43 @@
       };
       sharedModules = [
         { nixpkgs.overlays = [ direnvOverlay ]; }
+        stylix.darwinModules.stylix
         ./modules/common.nix
         ./modules/packages.nix
         ./modules/homebrew.nix
         home-manager.darwinModules.home-manager
         ./modules/home.nix
       ];
+      mkDarwin = hostFile:
+        let
+          host = import hostFile { inherit fonts; };
+          file = builtins.baseNameOf (toString hostFile);
+          require = field:
+            if host ? ${field} then host.${field}
+            else builtins.throw "${file}: missing required field '${field}'";
+        in
+        assert require "platform" != null;
+        assert require "primaryUser" != null;
+        assert require "user" != null;
+        nix-darwin.lib.darwinSystem {
+          specialArgs = {
+            inherit self;
+            font = host.font or fonts.monaspace.neon;
+            user = host.user;
+            themeName = host.themeName or "catppuccin-mocha";
+          };
+          modules = sharedModules ++ [
+            {
+              nixpkgs.hostPlatform = host.platform;
+              system.primaryUser = host.primaryUser;
+              system.stateVersion = 6;
+              system.configurationRevision = self.rev or self.dirtyRev or null;
+            }
+          ];
+        };
     in
     {
-      darwinConfigurations."Wills-MacBook-Air" = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit self font; };
-        modules = sharedModules ++ [ ./hosts/macbook-air.nix ];
-      };
-
-      darwinConfigurations."Wills-MacBook-Pro" = nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit self font; };
-        modules = sharedModules ++ [ ./hosts/macbook-pro.nix ];
-      };
+      darwinConfigurations."Wills-MacBook-Air" = mkDarwin ./hosts/macbook-air.nix;
+      darwinConfigurations."Wills-MacBook-Pro" = mkDarwin ./hosts/macbook-pro.nix;
     };
 }

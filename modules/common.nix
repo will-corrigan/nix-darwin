@@ -1,4 +1,4 @@
-{ pkgs, font, ... }:
+{ pkgs, font, themeName, ... }:
 {
   # ── Nix ────────────────────────────────────────────────────────────
 
@@ -23,9 +23,24 @@
   };
   nix.optimise.automatic = true;
 
-  # ── Fonts ──────────────────────────────────────────────────────────
+  # ── Stylix ────────────────────────────────────────────────────────
 
-  fonts.packages = [ pkgs.nerd-fonts.${font.pkg} ];
+  stylix = {
+    enable = true;
+    autoEnable = true;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/${themeName}.yaml";
+    image = ../wallpaper.avif;
+    fonts = {
+      monospace = {
+        package = pkgs.nerd-fonts.${font.pkg};
+        name = font.mono;
+      };
+      sizes = {
+        terminal = 10;
+        applications = 10;
+      };
+    };
+  };
 
   # ── Shell ──────────────────────────────────────────────────────────
 

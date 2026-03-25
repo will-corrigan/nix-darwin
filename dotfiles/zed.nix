@@ -1,4 +1,4 @@
-{ font, ... }:
+{ ... }:
 {
   programs.zed-editor = {
     enable = true;
@@ -19,14 +19,6 @@
         highlight_search = true;
       };
 
-      theme = {
-        mode = "system";
-        light = "One Light";
-        dark = "One Dark";
-      };
-      ui_font_size = 16;
-      buffer_font_family = font.name;
-      buffer_font_size = 15;
       buffer_font_features = {
         calt = true;
         liga = true;
@@ -66,7 +58,6 @@
       };
 
       terminal = {
-        font_family = font.name;
         font_size = 14;
         shell = "system";
         working_directory = "current_project_directory";
