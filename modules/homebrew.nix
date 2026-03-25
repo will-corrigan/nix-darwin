@@ -19,7 +19,7 @@
 
       "ghostty"
       "google-chrome"
-      "google-cloud-sdk"
+      "gcloud-cli"
       "rancher"
       "raycast"
       "slack"
