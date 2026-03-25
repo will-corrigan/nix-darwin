@@ -46,6 +46,7 @@
 
   system.defaults = {
     CustomUserPreferences."com.apple.symbolichotkeys".AppleSymbolicHotKeys."64".enabled = false;
+    CustomUserPreferences."com.google.Keystone.Agent".checkInterval = 0;
 
     NSGlobalDomain = {
       AppleShowAllExtensions = true;
