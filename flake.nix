@@ -19,7 +19,9 @@
       stylix,
     }:
     let
-      fonts = import ./fonts.nix;
+      lib = nixpkgs.lib;
+      fontMap = import ./fonts.nix;
+
       direnvOverlay = final: prev: {
         direnv = prev.direnv.overrideAttrs (old: {
           postPatch = (old.postPatch or "") + ''
@@ -27,6 +29,7 @@
           '';
         });
       };
+
       sharedModules = [
         { nixpkgs.overlays = [ direnvOverlay ]; }
         stylix.darwinModules.stylix
@@ -36,36 +39,49 @@
         home-manager.darwinModules.home-manager
         ./modules/home.nix
       ];
-      mkDarwin = hostFile:
+
+      platformMap = {
+        "apple-silicon" = "aarch64-darwin";
+        "intel" = "x86_64-darwin";
+      };
+
+      mkDarwin = host:
         let
-          host = import hostFile { inherit fonts; };
-          file = builtins.baseNameOf (toString hostFile);
-          require = field:
-            if host ? ${field} then host.${field}
-            else builtins.throw "${file}: missing required field '${field}'";
+          appearance = host.appearance or {};
+          fontKey = appearance.font or "monaspace-neon";
+          font = fontMap.${fontKey} or fontMap."monaspace-neon";
+          themeName = appearance.theme or "catppuccin-mocha";
         in
-        assert require "platform" != null;
-        assert require "primaryUser" != null;
-        assert require "user" != null;
         nix-darwin.lib.darwinSystem {
           specialArgs = {
-            inherit self;
-            font = host.font or fonts.monaspace.neon;
-            user = host.user;
-            themeName = host.themeName or "catppuccin-mocha";
+            inherit self host font themeName;
           };
           modules = sharedModules ++ [
             {
-              nixpkgs.hostPlatform = host.platform;
-              system.primaryUser = host.primaryUser;
+              nixpkgs.hostPlatform = platformMap.${host.machine.type} or "aarch64-darwin";
+              system.primaryUser = host.machine.username;
               system.stateVersion = 6;
               system.configurationRevision = self.rev or self.dirtyRev or null;
             }
           ];
         };
+
+      # Auto-discover all .toml host files
+      hostDir = builtins.readDir ./hosts;
+      tomlFiles = lib.filterAttrs (name: type:
+        type == "regular" && lib.hasSuffix ".toml" name
+      ) hostDir;
+
+      hosts = lib.mapAttrs' (filename: _:
+        let
+          host = builtins.fromTOML (builtins.readFile (./hosts + "/${filename}"));
+          name = (host.machine or (builtins.throw "${filename}: missing [machine] table")).computer_name
+            or (builtins.throw "${filename}: missing machine.computer_name");
+        in
+        lib.nameValuePair name (mkDarwin host)
+      ) tomlFiles;
     in
     {
-      darwinConfigurations."Wills-MacBook-Air" = mkDarwin ./hosts/macbook-air.nix;
-      darwinConfigurations."Wills-MacBook-Pro" = mkDarwin ./hosts/macbook-pro.nix;
+      darwinConfigurations = hosts;
     };
 }
