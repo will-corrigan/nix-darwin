@@ -1,0 +1,6 @@
+[rule.host-schema]
+include = ["hosts/*.toml"]
+keys = []
+
+[rule.host-schema.schema]
+path = "schema.json"

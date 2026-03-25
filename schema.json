@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "nix-darwin host configuration",
+  "description": "Configuration for a nix-darwin managed macOS machine",
+  "type": "object",
+  "required": ["machine", "user"],
+  "additionalProperties": false,
+  "properties": {
+    "machine": {
+      "type": "object",
+      "required": ["computer_name", "type", "username"],
+      "additionalProperties": false,
+      "properties": {
+        "computer_name": {
+          "type": "string",
+          "description": "Must match: scutil --get LocalHostName. No spaces.",
+          "pattern": "^[A-Za-z0-9-]+$"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["apple-silicon", "intel"],
+          "description": "Mac processor type"
+        },
+        "username": {
+          "type": "string",
+          "description": "macOS login username"
+        }
+      }
+    },
+    "user": {
+      "type": "object",
+      "required": ["name", "email"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Git commit author name"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Git commit email"
+        },
+        "ssh_key": {
+          "type": "string",
+          "description": "Public SSH key for git signing (e.g. ssh-ed25519 AAAA...)"
+        }
+      }
+    },
+    "appearance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "font": {
+          "type": "string",
+          "enum": [
+            "jetbrains-mono",
+            "jetbrains-mono-no-liga",
+            "monaspace-neon",
+            "monaspace-argon",
+            "monaspace-xenon",
+            "monaspace-krypton",
+            "monaspace-radon",
+            "mononoki",
+            "noto"
+          ],
+          "default": "monaspace-neon",
+          "description": "Terminal and editor font"
+        },
+        "theme": {
+          "type": "string",
+          "default": "catppuccin-mocha",
+          "description": "Base16 color scheme name. Popular: catppuccin-mocha, dracula, gruvbox-dark-hard, nord, tokyo-night-dark. Run: ls $(nix build nixpkgs#base16-schemes --no-link --print-out-paths)/share/themes/"
+        },
+        "wallpaper": {
+          "type": "string",
+          "default": "default",
+          "description": "Wallpaper name from wallpapers/ directory, or 'custom' to use wallpaper_path"
+        },
+        "wallpaper_path": {
+          "type": "string",
+          "description": "Path to custom wallpaper file (only used when wallpaper = 'custom')"
+        }
+      }
+    },
+    "programs": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Programs to enable. 'curated' = opinionated config, 'minimal' = bare enablement, absent = not installed.",
+      "properties": {
+        "zsh":      { "type": "string", "enum": ["curated", "minimal"], "description": "Shell with aliases and syntax highlighting" },
+        "starship": { "type": "string", "enum": ["curated", "minimal"], "description": "Beautiful prompt with git/cloud/lang modules" },
+        "fzf":      { "type": "string", "enum": ["curated", "minimal"], "description": "Fuzzy finder for files, history, and more" },
+        "bat":      { "type": "string", "enum": ["curated", "minimal"], "description": "File viewer with syntax highlighting" },
+        "btop":     { "type": "string", "enum": ["curated", "minimal"], "description": "Visual system monitor" },
+        "ghostty":  { "type": "string", "enum": ["curated", "minimal"], "description": "GPU-accelerated terminal emulator" },
+        "zed":      { "type": "string", "enum": ["curated", "minimal"], "description": "Modern editor with LSP support" },
+        "tmux":     { "type": "string", "enum": ["curated", "minimal"], "description": "Terminal multiplexer" },
+        "git":      { "type": "string", "enum": ["curated", "minimal"], "description": "Git, GitHub CLI, and SSH config" },
+        "direnv":   { "type": "string", "enum": ["curated", "minimal"], "description": "Per-project environment management" },
+        "zoxide":   { "type": "string", "enum": ["curated", "minimal"], "description": "Smart directory jumping (replaces cd)" },
+        "mise":     { "type": "string", "enum": ["curated", "minimal"], "description": "Language version manager (Node, Python, Go, etc.)" }
+      }
+    },
+    "integrations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ssh_signing": {
+          "type": "string",
+          "enum": ["1password", "gpg"],
+          "description": "SSH commit signing provider. Omit to disable signing."
+        }
+      }
+    },
+    "extra_packages": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cli": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Extra CLI tools from nixpkgs. Browse: https://search.nixos.org/packages"
+        },
+        "brews": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Extra Homebrew formulae. Browse: https://formulae.brew.sh/formula/"
+        },
+        "casks": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Extra Homebrew casks (GUI apps). Browse: https://formulae.brew.sh/cask/"
+        }
+      }
+    },
+    "macos": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "keyboard": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "caps_lock":    { "type": "string", "enum": ["escape", "caps-lock"], "default": "escape", "description": "What Caps Lock does. 'control' planned for v2." },
+            "key_repeat":   { "type": "string", "enum": ["slow", "medium", "fast"], "default": "fast" },
+            "repeat_delay": { "type": "string", "enum": ["long", "medium", "short"], "default": "short" }
+          }
+        },
+        "dock": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "position":        { "type": "string", "enum": ["left", "bottom", "right"], "default": "bottom" },
+            "icon_size":       { "type": "string", "enum": ["small", "medium", "large"], "default": "medium" },
+            "auto_hide":       { "type": "boolean", "default": true },
+            "minimize_to_app": { "type": "boolean", "default": true }
+          }
+        },
+        "finder": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "default_view":    { "type": "string", "enum": ["list", "columns", "icons", "gallery"], "default": "list" },
+            "show_extensions": { "type": "boolean", "default": true },
+            "show_path_bar":   { "type": "boolean", "default": false },
+            "show_hidden":     { "type": "boolean", "default": true }
+          }
+        },
+        "trackpad": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tap_to_click":   { "type": "boolean", "default": true },
+            "natural_scroll": { "type": "boolean", "default": false }
+          }
+        }
+      }
+    }
+  }
+}
