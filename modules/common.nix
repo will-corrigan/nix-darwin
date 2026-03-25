@@ -1,4 +1,50 @@
-{ pkgs, font, themeName, ... }:
+{ pkgs, lib, host, font, themeName, ... }:
+let
+  appearance = host.appearance or {};
+  macos = host.macos or {};
+  keyboard = macos.keyboard or {};
+  dock = macos.dock or {};
+  finder = macos.finder or {};
+  trackpad = macos.trackpad or {};
+
+  wallpaperName = appearance.wallpaper or "default";
+  wallpaperPath =
+    if wallpaperName == "custom"
+    then ../. + "/${appearance.wallpaper_path or "wallpaper.avif"}"
+    else if builtins.pathExists (../wallpapers + "/${wallpaperName}.avif")
+    then ../wallpapers + "/${wallpaperName}.avif"
+    else ../wallpaper.avif;
+
+  capsLockMap = {
+    "escape" = true;
+    "caps-lock" = false;
+  };
+
+  keyRepeatMap = {
+    "slow" = 6;
+    "medium" = 3;
+    "fast" = 1;
+  };
+
+  repeatDelayMap = {
+    "long" = 68;
+    "medium" = 25;
+    "short" = 10;
+  };
+
+  dockSizeMap = {
+    "small" = 36;
+    "medium" = 48;
+    "large" = 72;
+  };
+
+  finderViewMap = {
+    "list" = "Nlsv";
+    "columns" = "clmv";
+    "icons" = "icnv";
+    "gallery" = "glyv";
+  };
+in
 {
   # ── Nix ────────────────────────────────────────────────────────────
 
@@ -29,7 +75,7 @@
     enable = true;
     autoEnable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/${themeName}.yaml";
-    image = ../wallpaper.avif;
+    image = wallpaperPath;
     fonts = {
       monospace = {
         package = pkgs.nerd-fonts.${font.pkg};
@@ -54,7 +100,7 @@
 
   system.keyboard = {
     enableKeyMapping = true;
-    remapCapsLockToEscape = true;
+    remapCapsLockToEscape = capsLockMap.${keyboard.caps_lock or "escape"} or true;
   };
 
   # ── macOS Defaults ─────────────────────────────────────────────────
@@ -64,49 +110,39 @@
     CustomUserPreferences."com.google.Keystone.Agent".checkInterval = 0;
 
     NSGlobalDomain = {
-      AppleShowAllExtensions = true;
+      AppleShowAllExtensions = finder.show_extensions or true;
       NSAutomaticCapitalizationEnabled = false;
       NSAutomaticDashSubstitutionEnabled = false;
       NSAutomaticPeriodSubstitutionEnabled = false;
       NSAutomaticQuoteSubstitutionEnabled = false;
       NSAutomaticSpellingCorrectionEnabled = false;
-      "com.apple.swipescrolldirection" = false;
-      KeyRepeat = 1;
-      InitialKeyRepeat = 10;
+      "com.apple.swipescrolldirection" = trackpad.natural_scroll or false;
+      KeyRepeat = keyRepeatMap.${keyboard.key_repeat or "fast"} or 1;
+      InitialKeyRepeat = repeatDelayMap.${keyboard.repeat_delay or "short"} or 10;
+      NSDocumentSaveNewDocumentsToCloud = false;
     };
 
     finder = {
-      AppleShowAllFiles = true;
-      FXPreferredViewStyle = "Nlsv";
-      ShowPathbar = false;
+      AppleShowAllFiles = finder.show_hidden or true;
+      FXPreferredViewStyle = finderViewMap.${finder.default_view or "list"} or "Nlsv";
+      ShowPathbar = finder.show_path_bar or false;
       ShowStatusBar = false;
       _FXShowPosixPathInTitle = false;
       _FXSortFoldersFirst = true;
     };
 
     dock = {
-      autohide = true;
+      autohide = dock.auto_hide or true;
       show-recents = false;
-      tilesize = 48;
-      persistent-apps = [
-        "/System/Applications/System Settings.app"
-        "/Applications/Google Chrome.app"
-        "/Applications/1Password.app"
-        "/Applications/Visual Studio Code.app"
-        "/Applications/Slack.app"
-        "/Applications/Discord.app"
-        "/Applications/Spotify.app"
-        "/Applications/Ghostty.app"
-        "/Applications/Zed.app"
-      ];
+      tilesize = dockSizeMap.${dock.icon_size or "medium"} or 48;
+      minimize-to-application = dock.minimize_to_app or true;
+      orientation = dock.position or "bottom";
     };
 
     trackpad = {
-      Clicking = true;
+      Clicking = trackpad.tap_to_click or true;
       TrackpadThreeFingerDrag = true;
     };
-
-    NSGlobalDomain.NSDocumentSaveNewDocumentsToCloud = false;
 
     WindowManager.EnableStandardClickToShowDesktop = false;
   };
