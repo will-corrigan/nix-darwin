@@ -1,29 +1,16 @@
-{ pkgs, ... }:
-{
-  environment.systemPackages = with pkgs; [
-    _1password-cli
-    bruno
-    eza
-    fd
-    flyctl
-    glow
-    jq
-    k9s
-    kubectl
+{ pkgs, lib, host, ... }:
+let
+  extraPkgs = host.extra_packages or {};
+  cliExtras = extraPkgs.cli or [];
 
-    deadnix
-    nixd
+  # Minimal base packages the framework needs
+  basePackages = with pkgs; [
     nh
-    nixfmt
-    statix
-    p7zip
-    ripgrep
-    sqlite
-    terraform-ls
-    tldr
-    tree
-    vim
-    wget
-    yq
   ];
+
+  # Map string names to packages
+  extraPackages = map (name: pkgs.${name}) cliExtras;
+in
+{
+  environment.systemPackages = basePackages ++ extraPackages;
 }
