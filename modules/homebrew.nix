@@ -7,6 +7,11 @@
     onActivation.upgrade = true;
     onActivation.cleanup = "zap";
 
+    brews = [
+      "awscli"
+      "mise"
+    ];
+
     casks = [
       "1password"
       "claude-code"
@@ -14,6 +19,7 @@
 
       "ghostty"
       "google-chrome"
+      "google-cloud-sdk"
       "rancher"
       "raycast"
       "slack"

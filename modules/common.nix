@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, font, ... }:
 {
   # ── Nix ────────────────────────────────────────────────────────────
 
@@ -19,15 +19,13 @@
   nix.gc = {
     automatic = true;
     interval = { Weekday = 0; Hour = 3; Minute = 0; };
-    options = "--delete-older-than 30d";
+    options = "--delete-older-than 7d";
   };
   nix.optimise.automatic = true;
 
   # ── Fonts ──────────────────────────────────────────────────────────
 
-  fonts.packages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-  ];
+  fonts.packages = [ pkgs.nerd-fonts.${font.pkg} ];
 
   # ── Shell ──────────────────────────────────────────────────────────
 
