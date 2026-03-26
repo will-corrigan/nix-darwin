@@ -2,7 +2,7 @@
 
 Declarative macOS configuration using [nix-darwin](https://github.com/nix-darwin/nix-darwin), [home-manager](https://github.com/nix-community/home-manager), [Stylix](https://github.com/nix-community/stylix), and [Nix flakes](https://nix.dev/concepts/flakes).
 
-Fork this repo, create your host file, rebuild. Everything else is shared.
+Fork this repo, create a TOML host file, rebuild. Everything else is shared.
 
 ## Prerequisites
 
@@ -10,7 +10,7 @@ Fork this repo, create your host file, rebuild. Everything else is shared.
 - [Nix](https://nixos.org/download/) with flakes enabled
 - [nix-darwin](https://github.com/nix-darwin/nix-darwin) bootstrapped
 - [Homebrew](https://brew.sh/) installed (nix-darwin manages it declaratively after initial install)
-- [1Password](https://1password.com/) for SSH key signing
+- [1Password](https://1password.com/) for SSH key signing (optional)
 
 ## Quick Start
 
@@ -19,140 +19,172 @@ Fork this repo, create your host file, rebuild. Everything else is shared.
 sudo git clone <repo-url> /etc/nix-darwin
 cd /etc/nix-darwin
 
-# 2. Create your host (copy the template)
-cp hosts/template.nix hosts/my-mac.nix
-# Edit hosts/my-mac.nix with your details
+# 2. Create your host file
+cp hosts/wills-macbook-air.toml hosts/my-mac.toml
+# Edit hosts/my-mac.toml with your details
 
-# 3. Add your host to flake.nix
-#    darwinConfigurations."My-Hostname" = mkDarwin ./hosts/my-mac.nix;
-
-# 4. Build
+# 3. Build (host is auto-discovered — no flake.nix editing needed)
 sudo nix flake update --flake /etc/nix-darwin && nh darwin switch /etc/nix-darwin
 ```
 
-After the first build, the `rebuild` alias handles steps 3-4:
+After the first build, the `rebuild` alias handles step 3:
 
 ```bash
 rebuild
 ```
 
+A setup TUI (M2) is planned to automate host file creation.
+
 ## Repo Structure
 
 ```
 .
-├── flake.nix               # Entry point: inputs, mkDarwin helper, host list
-├── flake.lock              # Pinned dependency versions
-├── fonts.nix               # Font catalog (pure data)
-├── wallpaper.avif          # Wallpaper (required by Stylix)
+├── flake.nix               # Entry point: auto-discovers hosts/*.toml
+├── flake.lock
+├── fonts.nix               # Font catalog (flat keys)
+├── schema.json             # JSON Schema for host TOML validation
+├── wallpapers/             # Wallpaper collection
+│   └── default.avif
 ├── modules/
-│   ├── common.nix          # System: nix, Stylix, keyboard, macOS defaults
-│   ├── packages.nix        # CLI tools (nixpkgs)
-│   ├── homebrew.nix        # GUI apps + pre-built tools (Homebrew)
-│   └── home.nix            # Home-manager: imports all dotfiles
+│   ├── common.nix          # Nix, Stylix, keyboard, macOS defaults (host-driven)
+│   ├── packages.nix        # CLI tools (base + host extras)
+│   ├── homebrew.nix        # GUI apps + tools (integration deps + host extras)
+│   └── home.nix            # Home-manager: conditional dotfile imports
 ├── hosts/
-│   ├── template.nix        # Copy this to create a new host
-│   ├── macbook-air.nix     # Example host
-│   └── macbook-pro.nix     # Example host
-└── dotfiles/               # One file per program (home-manager modules)
-    ├── zsh.nix             # Shell: aliases, syntax highlighting
-    ├── starship.nix        # Prompt: Nerd Font icons, git/cloud/lang modules
-    ├── fzf.nix             # Fuzzy finder: fd integration, bat preview
-    ├── git.nix             # Git + GitHub CLI + SSH (1Password signing)
-    ├── bat.nix             # File viewer
-    ├── btop.nix            # System monitor, vim keys
-    ├── tmux.nix            # Multiplexer: C-a prefix, vim nav
-    ├── ghostty.nix         # Terminal: opacity, splits
-    ├── zed.nix             # Editor: vim mode, LSP, format-on-save
-    ├── direnv.nix          # Per-project environments (nix-direnv)
-    ├── zoxide.nix          # Smart cd
-    └── mise.nix            # Version manager config
+│   └── *.toml              # One per machine (auto-discovered)
+└── dotfiles/
+    ├── curated/            # Opinionated configs (behavior + keybinds + LSP)
+    │   ├── zsh.nix, starship.nix, fzf.nix, bat.nix, btop.nix
+    │   ├── ghostty.nix, zed.nix, tmux.nix, git.nix
+    │   └── direnv.nix, zoxide.nix, mise.nix
+    └── minimal/            # Bare enablement (just programs.X.enable = true)
+        └── (same files)
 ```
 
 ## Architecture
 
 ```
-hosts/my-mac.nix        (per-machine: user, platform, font, theme)
+hosts/my-mac.toml           (per-machine: user, platform, font, theme, programs)
   │
-flake.nix
-  ├── imports fonts.nix   (font catalog)
-  ├── mkDarwin            (reads host file, wires everything up)
+  └── builtins.fromTOML
+        │
+flake.nix: mkDarwin
+  ├── fonts.nix             (font catalog — flat string keys)
+  ├── modules/              (system-level: shared across all hosts)
+  │   ├── common.nix          Stylix (theme + fonts), nix settings, macOS defaults
+  │   ├── packages.nix        CLI tools + host extra_packages.cli
+  │   └── homebrew.nix        GUI apps + host extra_packages.brews/casks
   │
-  ├── modules/            (system-level: shared across all hosts)
-  │   ├── common.nix        Stylix (theme + fonts), nix settings, macOS defaults
-  │   ├── packages.nix      CLI tools
-  │   └── homebrew.nix      GUI apps
-  │
-  └── home.nix            (user-level: imports all dotfiles)
-      └── dotfiles/        (program-level: behavior only, no theme/font code)
+  └── home.nix              (user-level: conditionally imports dotfiles)
+      └── dotfiles/{curated,minimal}/   (selected per-program from host TOML)
 ```
 
 ### How it flows
 
-1. Host file defines: who you are, what machine, optional font/theme
-2. `mkDarwin` reads the host file and passes `user`, `font`, `themeName` via `specialArgs`
-3. `common.nix` configures Stylix with the font and theme — Stylix auto-themes all apps
-4. `home.nix` passes `user` to dotfiles (only `git.nix` needs it)
-5. Dotfiles contain only **behavior** config (keybinds, aliases, LSP settings) — no colors or fonts
+1. `flake.nix` reads all `hosts/*.toml` via `builtins.readDir` + `builtins.fromTOML` (auto-discovery, no manual registration).
+2. `mkDarwin` resolves the font key and theme name, then passes `host`, `font`, and `themeName` via `specialArgs`.
+3. `common.nix` configures Stylix with the font and theme — Stylix auto-themes all apps.
+4. `home.nix` reads `host.programs` and imports `dotfiles/curated/<prog>.nix` or `dotfiles/minimal/<prog>.nix` for each enabled program.
+5. Dotfiles contain only **behavior** config (keybinds, aliases, LSP settings) — no colors or fonts.
 
-### Module loading order
+## Host File Format
 
-1. Overlays (direnv patch)
-2. Stylix
-3. `common.nix` (system settings, Stylix config, macOS defaults)
-4. `packages.nix` (nixpkgs CLI tools)
-5. `homebrew.nix` (GUI apps)
-6. home-manager
-7. `home.nix` (imports all dotfiles)
-8. Host-specific config (platform, username)
+```toml
+#:schema ../schema.json
+
+[machine]
+computer_name = "My-MacBook"    # must match: scutil --get LocalHostName
+type          = "apple-silicon" # or "intel"
+username      = "myuser"        # macOS login username
+
+[user]
+name    = "Your Name"           # git commit author
+email   = "you@example.com"     # git commit email
+ssh_key = "ssh-ed25519 AAAA..." # public key (optional, for git signing)
+
+[appearance]
+font      = "monaspace-neon"    # see Font System below
+theme     = "catppuccin-mocha"  # base16 scheme name
+wallpaper = "default"           # name from wallpapers/ dir, or "custom"
+
+[programs]
+# Each program: "curated" (opinionated config) or "minimal" (bare enable)
+# Omit a program entirely to skip installation.
+zsh      = "curated"
+starship = "curated"
+fzf      = "curated"
+bat      = "curated"
+btop     = "curated"
+ghostty  = "curated"
+zed      = "curated"
+tmux     = "curated"
+git      = "curated"
+direnv   = "curated"
+zoxide   = "curated"
+mise     = "curated"
+
+[integrations]
+ssh_signing = "1password"  # or "gpg", omit to disable signing
+
+[extra_packages]
+cli   = ["ripgrep", "fd", "jq"]          # nixpkgs CLI tools
+brews = ["awscli"]                        # Homebrew formulae
+casks = ["google-chrome", "slack"]        # Homebrew casks (GUI apps)
+
+[macos.keyboard]
+caps_lock    = "escape"  # or "caps-lock"
+key_repeat   = "fast"    # slow / medium / fast
+repeat_delay = "short"   # long / medium / short
+
+[macos.dock]
+position        = "bottom"  # left / bottom / right
+icon_size       = "medium"  # small / medium / large
+auto_hide       = true
+minimize_to_app = true
+
+[macos.finder]
+default_view    = "list"  # list / columns / icons / gallery
+show_extensions = true
+show_path_bar   = false
+show_hidden     = true
+
+[macos.trackpad]
+tap_to_click   = true
+natural_scroll = false
+```
+
+### curated vs minimal
+
+| Value | What you get |
+|-------|-------------|
+| `"curated"` | Opinionated config: keybinds, aliases, LSP settings, integrations |
+| `"minimal"` | Just `programs.X.enable = true` — works, no opinions |
 
 ## Adding a New Host
 
-1. Copy the template:
+1. Create a TOML file in `hosts/`:
 
 ```bash
-cp hosts/template.nix hosts/my-mac.nix
+cp hosts/wills-macbook-air.toml hosts/my-mac.toml
 ```
 
-2. Edit `hosts/my-mac.nix`:
+2. Edit the file with your machine details (see Host File Format above).
 
-```nix
-{ fonts }:
-{
-  # ── Required ──────────────────────────────────────────────────────
-  hostname    = "My-Hostname";          # scutil --get LocalHostName
-  platform    = "aarch64-darwin";       # or x86_64-darwin
-  primaryUser = "username";             # macOS login username
-
-  user = {
-    name   = "Your Name";              # git commit author
-    email  = "you@example.com";        # git commit email
-    sshKey = "ssh-ed25519 AAAA...";    # public key (1Password)
-  };
-
-  # ── Optional (uncomment to override defaults) ─────────────────────
-  # font      = fonts.mononoki;
-  # themeName = "dracula";
-}
-```
-
-3. Add one line to `flake.nix`:
-
-```nix
-darwinConfigurations."My-Hostname" = mkDarwin ./hosts/my-mac.nix;
-```
-
-4. Rebuild:
+3. Rebuild — the new host is auto-discovered:
 
 ```bash
-sudo nix flake update --flake /etc/nix-darwin && nh darwin switch /etc/nix-darwin
+rebuild
 ```
+
+No changes to `flake.nix` required.
 
 ## Theming (Stylix)
 
-[Stylix](https://github.com/nix-community/stylix) handles all theming automatically. Set a [base16 scheme](https://github.com/tinted-theming/schemes) name in your host file and every app gets themed:
+[Stylix](https://github.com/nix-community/stylix) handles all theming automatically. Set a [base16 scheme](https://github.com/tinted-theming/schemes) name in your host file:
 
-```nix
-themeName = "catppuccin-mocha";   # default
+```toml
+[appearance]
+theme = "catppuccin-mocha"   # default
 ```
 
 To see all available themes:
@@ -170,35 +202,39 @@ Stylix themes these apps automatically: bat, btop, fzf, ghostty, starship, tmux,
 To disable Stylix for a specific app and theme it manually:
 
 ```nix
-# In the relevant dotfiles/*.nix
+# In the relevant dotfiles/curated/*.nix
 stylix.targets.ghostty.enable = false;
 ```
 
 ## Font System
 
-Fonts are defined in `fonts.nix` as a catalog. Each entry has:
+Fonts are defined in `fonts.nix` as flat string keys. Each entry has:
 
-| Field  | Used by              | Example                          |
-|--------|----------------------|----------------------------------|
-| `name` | Editors              | `MonaspiceNe Nerd Font`          |
-| `mono` | Terminals            | `MonaspiceNe Nerd Font Mono`     |
-| `pkg`  | Nix package install  | `monaspace`                      |
+| Field  | Used by             | Example                          |
+|--------|---------------------|----------------------------------|
+| `name` | Editors             | `MonaspiceNe Nerd Font`          |
+| `mono` | Terminals           | `MonaspiceNe Nerd Font Mono`     |
+| `pkg`  | Nix package install | `monaspace`                      |
 
 ### Available fonts
 
-```nix
-fonts.monaspace.neon               # Monaspace Neon (default)
-fonts.monaspace.argon / xenon / krypton / radon
-fonts.jetbrains-mono.default       # JetBrains Mono
-fonts.jetbrains-mono.no-ligatures  # JetBrains Mono (no ligatures)
-fonts.mononoki                     # Mononoki
-fonts.noto                         # Noto Sans Mono
-```
+| Key | Font |
+|-----|------|
+| `monaspace-neon` | Monaspace Neon (default) |
+| `monaspace-argon` | Monaspace Argon |
+| `monaspace-xenon` | Monaspace Xenon |
+| `monaspace-krypton` | Monaspace Krypton |
+| `monaspace-radon` | Monaspace Radon |
+| `jetbrains-mono` | JetBrains Mono |
+| `jetbrains-mono-no-liga` | JetBrains Mono (no ligatures) |
+| `mononoki` | Mononoki |
+| `noto` | Noto Sans Mono |
 
-Override in your host file:
+Set the key in your host file:
 
-```nix
-font = fonts.jetbrains-mono.default;
+```toml
+[appearance]
+font = "jetbrains-mono"
 ```
 
 ### Adding a new font
@@ -214,42 +250,54 @@ ghostty +list-fonts | grep -i <name>
 Add to `fonts.nix`:
 
 ```nix
-my-font = { name = "MyFont Nerd Font"; mono = "MyFont Nerd Font Mono"; pkg = "my-font"; };
+"my-font" = { name = "MyFont Nerd Font"; mono = "MyFont Nerd Font Mono"; pkg = "my-font"; };
 ```
+
+Then use `"my-font"` as the `font` key in any host TOML.
 
 ## Adding a New Program
 
-1. Create `dotfiles/myapp.nix`:
+1. Create `dotfiles/curated/myapp.nix` (opinionated config):
 
 ```nix
 { ... }:
 {
   programs.myapp = {
     enable = true;
-    # config here — behavior only, Stylix handles theme/font
+    # behavior config here — Stylix handles theme/font
   };
 }
 ```
 
-2. Add to imports in `modules/home.nix`:
+2. Create `dotfiles/minimal/myapp.nix` (bare enablement):
 
 ```nix
-imports = [
-  # ...existing...
-  ../dotfiles/myapp.nix
-];
+{ ... }:
+{
+  programs.myapp.enable = true;
+}
 ```
 
-If the app is installed via Homebrew, set `package = null`.
+3. Add `myapp` to the `programs` enum in `schema.json`:
+
+```json
+"myapp": { "type": "string", "enum": ["curated", "minimal"], "description": "..." }
+```
+
+4. `home.nix` will now pick up `programs.myapp = "curated"` or `"minimal"` from host TOML files automatically.
+
+If the app is installed via Homebrew, set `package = null` in the dotfile.
 
 ## Package Management
 
 | Where | What goes here | Examples |
-|-------|---------------|----------|
-| `packages.nix` | CLI tools from nixpkgs | ripgrep, fd, jq, kubectl |
-| `homebrew.nix` brews | Slow-to-build CLI tools | awscli, mise |
-| `homebrew.nix` casks | GUI apps | Ghostty, Chrome, Slack, Zed |
-| `dotfiles/*.nix` | Tools with rich config | starship, tmux, bat |
+|-------|----------------|----------|
+| `extra_packages.cli` (host TOML) | Per-host CLI tools from nixpkgs | ripgrep, fd, jq, kubectl |
+| `extra_packages.brews` (host TOML) | Per-host Homebrew formulae | awscli, mise |
+| `extra_packages.casks` (host TOML) | Per-host GUI apps | Ghostty, Chrome, Slack, Zed |
+| `packages.nix` | Base CLI tools shared across all hosts | (edit directly) |
+| `homebrew.nix` | Base GUI apps shared across all hosts | (edit directly) |
+| `dotfiles/*.nix` | Tools with rich home-manager config | starship, tmux, bat |
 
 **Rule of thumb:** GUI or slow-to-build goes to Homebrew. Config-heavy tools get a home-manager module in dotfiles/. Everything else goes to nixpkgs.
 
@@ -286,10 +334,10 @@ If the app is installed via Homebrew, set `package = null`.
 ## Useful Commands
 
 ```bash
-rebuild                              # Rebuild (alias)
-ghostty +list-fonts | grep -i <name> # Check font availability
+rebuild                                     # Rebuild (alias)
+ghostty +list-fonts | grep -i <name>        # Check font availability
 nix-collect-garbage --delete-older-than 7d  # Manual GC (runs weekly automatically)
-statix check .                       # Lint nix files
-deadnix .                            # Find unused code
-nixfmt .                             # Format nix files
+statix check .                              # Lint nix files
+deadnix .                                   # Find unused code
+nixfmt .                                    # Format nix files
 ```
