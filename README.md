@@ -216,19 +216,40 @@ Fonts are defined in `fonts.nix` as flat string keys. Each entry has:
 | `mono` | Terminals           | `MonaspiceNe Nerd Font Mono`     |
 | `pkg`  | Nix package install | `monaspace`                      |
 
-### Available fonts
+### Available fonts (30)
 
 | Key | Font |
 |-----|------|
+| `0xproto` | 0xProto |
+| `cascadia-code` | Cascadia Code |
+| `cascadia-mono` | Cascadia Mono |
+| `comic-shanns` | Comic Shanns Mono |
+| `commit-mono` | Commit Mono |
+| `cousine` | Cousine |
+| `droid-sans-mono` | Droid Sans Mono |
+| `fira-code` | Fira Code |
+| `geist-mono` | Geist Mono |
+| `hack` | Hack |
+| `ibm-plex-mono` | IBM Plex Mono |
+| `inconsolata` | Inconsolata |
+| `iosevka` | Iosevka |
+| `iosevka-term` | Iosevka Term |
+| `jetbrains-mono` | JetBrains Mono |
+| `jetbrains-mono-no-liga` | JetBrains Mono (no ligatures) |
+| `lilex` | Lilex |
+| `meslo` | Meslo LG S |
 | `monaspace-neon` | Monaspace Neon (default) |
 | `monaspace-argon` | Monaspace Argon |
 | `monaspace-xenon` | Monaspace Xenon |
 | `monaspace-krypton` | Monaspace Krypton |
 | `monaspace-radon` | Monaspace Radon |
-| `jetbrains-mono` | JetBrains Mono |
-| `jetbrains-mono-no-liga` | JetBrains Mono (no ligatures) |
 | `mononoki` | Mononoki |
 | `noto` | Noto Sans Mono |
+| `roboto-mono` | Roboto Mono |
+| `source-code-pro` | Source Code Pro |
+| `ubuntu-mono` | Ubuntu Mono |
+| `victor-mono` | Victor Mono |
+| `zed-mono` | Zed Mono |
 
 Set the key in your host file:
 
@@ -292,14 +313,14 @@ If the app is installed via Homebrew, set `package = null` in the dotfile.
 
 | Where | What goes here | Examples |
 |-------|----------------|----------|
+| `[programs]` (host TOML) | Config-managed tools with curated/minimal dotfiles | zsh, git, tmux, ghostty, zed |
 | `extra_packages.cli` (host TOML) | Per-host CLI tools from nixpkgs | ripgrep, fd, jq, kubectl |
 | `extra_packages.brews` (host TOML) | Per-host Homebrew formulae | awscli, mise |
-| `extra_packages.casks` (host TOML) | Per-host GUI apps | Ghostty, Chrome, Slack, Zed |
-| `packages.nix` | Base CLI tools shared across all hosts | (edit directly) |
-| `homebrew.nix` | Base GUI apps shared across all hosts | (edit directly) |
-| `dotfiles/*.nix` | Tools with rich home-manager config | starship, tmux, bat |
+| `extra_packages.casks` (host TOML) | Per-host GUI apps | Chrome, Slack, Zed, Discord |
 
-**Rule of thumb:** GUI or slow-to-build goes to Homebrew. Config-heavy tools get a home-manager module in dotfiles/. Everything else goes to nixpkgs.
+All packages are per-host via your TOML file. The only shared base package is `nh` (the rebuild helper).
+
+**Rule of thumb:** If a tool has rich config, add it as a program with a dotfile. GUI or slow-to-build goes to Homebrew casks. Everything else goes to `extra_packages.cli` (nixpkgs).
 
 ## Key Bindings
 
