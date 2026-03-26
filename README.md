@@ -23,11 +23,11 @@ cd /etc/nix-darwin
 cp hosts/wills-macbook-air.toml hosts/my-mac.toml
 # Edit hosts/my-mac.toml with your details
 
-# 3. Build (host is auto-discovered — no flake.nix editing needed)
-sudo nix flake update --flake /etc/nix-darwin && nh darwin switch /etc/nix-darwin
+# 3. First build (uses darwin-rebuild directly — nh isn't installed yet)
+sudo nix flake update --flake /etc/nix-darwin && darwin-rebuild switch --flake /etc/nix-darwin
 ```
 
-After the first build, the `rebuild` alias handles step 3:
+After the first build, `nh` and the `rebuild` alias are available:
 
 ```bash
 rebuild
