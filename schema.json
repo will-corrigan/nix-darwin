@@ -43,7 +43,7 @@
         },
         "ssh_key": {
           "type": "string",
-          "description": "Public SSH key for git signing (e.g. ssh-ed25519 AAAA...)"
+          "description": "Public SSH key for git signing (e.g. ssh-ed25519 AAAA...). Required when integrations.ssh_signing is set."
         }
       }
     },

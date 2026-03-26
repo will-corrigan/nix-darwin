@@ -7,11 +7,9 @@ let
   integrations = host.integrations or {};
   signing = integrations.ssh_signing or null;
 
-  # Base brews/casks needed by integrations
+  # Base casks needed by integrations
   integrationCasks =
     lib.optionals (signing == "1password") [ "1password" ];
-  integrationBrews =
-    lib.optionals (signing == "1password") [];
 in
 {
   homebrew = {
@@ -21,7 +19,7 @@ in
     onActivation.upgrade = true;
     onActivation.cleanup = "uninstall";
 
-    brews = integrationBrews ++ extraBrews;
+    brews = extraBrews;
     casks = integrationCasks ++ extraCasks;
   };
 }

@@ -10,11 +10,12 @@ let
   wallpaperName = appearance.wallpaper or "default";
   wallpaperPath =
     if wallpaperName == "custom"
-    then ../. + "/${appearance.wallpaper_path or "wallpaper.avif"}"
+    then ../. + "/${appearance.wallpaper_path or "wallpapers/default.avif"}"
     else if builtins.pathExists (../wallpapers + "/${wallpaperName}.avif")
     then ../wallpapers + "/${wallpaperName}.avif"
-    else ../wallpaper.avif;
+    else ../wallpapers/default.avif;
 
+  # "control" planned for v2 — requires hidutil or system.defaults, not system.keyboard
   capsLockMap = {
     "escape" = true;
     "caps-lock" = false;

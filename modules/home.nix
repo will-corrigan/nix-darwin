@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   host,
   ...
@@ -11,6 +10,8 @@ let
 
   # Map program name + level to the correct dotfile path
   programImport = name: level:
+    assert level == "curated" || level == "minimal"
+      || builtins.throw "host.programs.${name}: invalid level '${level}' (must be 'curated' or 'minimal')";
     if level == "curated"
     then ../dotfiles/curated/${name}.nix
     else ../dotfiles/minimal/${name}.nix;
