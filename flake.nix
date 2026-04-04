@@ -30,10 +30,11 @@
         });
       };
 
-      sharedModules = [
+      darwinModules = [
         { nixpkgs.overlays = [ direnvOverlay ]; }
         stylix.darwinModules.stylix
-        ./modules/common.nix
+        ./modules/shared.nix
+        ./modules/darwin.nix
         ./modules/packages.nix
         ./modules/homebrew.nix
         home-manager.darwinModules.home-manager
@@ -56,7 +57,7 @@
           specialArgs = {
             inherit self host font themeName;
           };
-          modules = sharedModules ++ [
+          modules = darwinModules ++ [
             {
               nixpkgs.hostPlatform = platformMap.${host.machine.type} or "aarch64-darwin";
               system.primaryUser = host.machine.username;
