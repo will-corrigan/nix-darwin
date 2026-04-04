@@ -1,4 +1,10 @@
-{ ... }:
+{ platform ? "darwin", ... }:
+let
+  clipboardCmd =
+    if platform == "darwin" then "pbcopy"
+    else if platform == "wsl" then "clip.exe"
+    else "xclip -selection clipboard";
+in
 {
   programs.tmux = {
     enable = true;
@@ -33,10 +39,10 @@
       set -g set-titles on
       set -g set-titles-string "#S / #W"
 
-      # Copy Mode (vi + macOS clipboard)
+      # Copy Mode (vi + platform clipboard)
       bind -T copy-mode-vi v send-keys -X begin-selection
-      bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "pbcopy"
-      bind -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "pbcopy"
+      bind -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "${clipboardCmd}"
+      bind -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${clipboardCmd}"
 
       # Splits & Windows
       bind \\ split-window -h -c "#{pane_current_path}"

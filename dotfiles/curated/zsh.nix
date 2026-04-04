@@ -1,11 +1,17 @@
-{ ... }:
+{ platform ? "darwin", ... }:
+let
+  rebuildCmd =
+    if platform == "darwin"
+    then "sudo nix flake update --flake /etc/nix-darwin && nh darwin switch /etc/nix-darwin"
+    else "sudo nix flake update --flake /etc/nixos && nh os switch /etc/nixos";
+in
 {
   programs.zsh = {
     enable = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
     shellAliases = {
-      rebuild = "sudo nix flake update --flake /etc/nix-darwin && nh darwin switch /etc/nix-darwin";
+      rebuild = rebuildCmd;
 
       rm = "rm -i";
       cp = "cp -i";
