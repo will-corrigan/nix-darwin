@@ -33,8 +33,8 @@ mise     = "curated"
 ssh_signing = "1password"
 
 [extra_packages]
-cli   = ["_1password-cli", "bruno", "eza", "fd", "flyctl", "glow", "jq", "k9s", "kubectl", "deadnix", "nixd", "nh", "nixfmt", "statix", "p7zip", "ripgrep", "sqlite", "terraform-ls", "tldr", "tree", "vim", "wget", "yq"]
-brews = ["awscli", "mise"]
+cli   = ["_1password-cli", "awscli", "bruno", "eza", "fd", "flyctl", "glow", "jq", "k9s", "kubectl", "deadnix", "nixd", "nh", "nixfmt", "statix", "p7zip", "ripgrep", "sqlite", "terraform-ls", "tldr", "tree", "vim", "wget", "yq"]
+brews = ["mise"]
 casks = ["1password", "claude-code", "discord", "ghostty", "google-chrome", "gcloud-cli", "rancher", "raycast", "slack", "spotify", "visual-studio-code", "zed"]
 
 [macos.keyboard]

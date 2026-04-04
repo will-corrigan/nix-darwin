@@ -1,0 +1,36 @@
+#:schema ../schema.json
+
+[machine]
+computer_name    = "wills-wsl"
+type             = "wsl"
+username         = "will"
+windows_username = "wcorr"
+
+[user]
+name    = "Will Corrigan"
+email   = "will-corrigan@users.noreply.github.com"
+ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHx5824VO9jx/mjYyVW8dcxywMn4dSk5KEbD3Eq2kCJ8"
+
+[appearance]
+font  = "monaspace-neon"
+theme = "catppuccin-mocha"
+
+[programs]
+zsh      = "curated"
+starship = "curated"
+fzf      = "curated"
+bat      = "curated"
+btop     = "curated"
+ghostty  = "curated"
+zed      = "curated"
+tmux     = "curated"
+git      = "curated"
+direnv   = "curated"
+zoxide   = "curated"
+mise     = "curated"
+
+[integrations]
+ssh_signing = "1password"
+
+[extra_packages]
+cli = ["_1password-cli", "awscli", "bruno", "eza", "fd", "flyctl", "glow", "jq", "k9s", "kubectl", "deadnix", "mise", "nixd", "nh", "nixfmt", "statix", "p7zip", "ripgrep", "sqlite", "terraform-ls", "tldr", "tree", "vim", "wget", "yq"]
