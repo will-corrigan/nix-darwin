@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "nix-darwin host configuration",
+  "title": "Host configuration",
   "description": "Configuration for a nix-darwin (macOS) or NixOS (Linux/WSL) managed machine",
   "type": "object",
   "required": ["machine", "user"],

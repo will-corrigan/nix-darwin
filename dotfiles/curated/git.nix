@@ -32,20 +32,20 @@ in
       pull.rebase = true;
     } // (if platform == "wsl" then {
       core.sshCommand = sshCommand;
-    } else {}) // (if signing == "1password" then {
-      signing = {
-        key = host.user.ssh_key or "";
-        signByDefault = true;
-        format = "ssh";
-        signer = signerPath;
-      };
-    } else if signing == "gpg" then {
-      signing = {
-        signByDefault = true;
-        format = "openpgp";
-      };
     } else {});
-  };
+  } // (if signing == "1password" then {
+    signing = {
+      key = host.user.ssh_key or "";
+      signByDefault = true;
+      format = "ssh";
+      signer = signerPath;
+    };
+  } else if signing == "gpg" then {
+    signing = {
+      signByDefault = true;
+      format = "openpgp";
+    };
+  } else {});
 
   programs.gh = {
     enable = true;
