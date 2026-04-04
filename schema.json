@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "nix-darwin host configuration",
-  "description": "Configuration for a nix-darwin managed macOS machine",
+  "description": "Configuration for a nix-darwin (macOS) or NixOS (Linux/WSL) managed machine",
   "type": "object",
   "required": ["machine", "user"],
   "additionalProperties": false,
@@ -18,12 +18,16 @@
         },
         "type": {
           "type": "string",
-          "enum": ["apple-silicon", "intel"],
-          "description": "Mac processor type"
+          "enum": ["apple-silicon", "intel", "wsl", "linux"],
+          "description": "Machine type: apple-silicon/intel for macOS, wsl for NixOS-WSL, linux for native NixOS"
         },
         "username": {
           "type": "string",
-          "description": "macOS login username"
+          "description": "Login username"
+        },
+        "windows_username": {
+          "type": "string",
+          "description": "Windows login username (required for WSL — used for 1Password interop paths)"
         }
       }
     },
