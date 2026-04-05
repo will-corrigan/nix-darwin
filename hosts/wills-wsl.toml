@@ -1,7 +1,7 @@
 #:schema ../schema.json
 
 [machine]
-computer_name    = "wills-wsl"
+computer_name    = "nixos"
 type             = "wsl"
 username         = "will"
 windows_username = "wcorr"
