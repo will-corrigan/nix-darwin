@@ -13,6 +13,7 @@ in
   wsl = lib.mkIf (machineType == "wsl") {
     enable = true;
     defaultUser = username;
+    interop.register = true;
   };
 
   # ── Nix GC & Optimise (systemd format) ─────────────────────────────

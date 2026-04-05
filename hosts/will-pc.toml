@@ -32,4 +32,4 @@ mise     = "curated"
 ssh_signing = "1password"
 
 [extra_packages]
-cli = ["_1password-cli", "awscli", "bruno", "eza", "fd", "flyctl", "glow", "jq", "k9s", "kubectl", "deadnix", "mise", "nixd", "nh", "nixfmt", "statix", "p7zip", "ripgrep", "sqlite", "terraform-ls", "tldr", "tree", "vim", "wget", "yq"]
+cli = ["_1password-cli", "awscli", "bruno", "claude-code", "eza", "fd", "flyctl", "glow", "jq", "k9s", "kubectl", "deadnix", "mise", "nixd", "nh", "nixfmt", "statix", "p7zip", "ripgrep", "sqlite", "terraform-ls", "tldr", "tree", "vim", "wget", "yq"]
