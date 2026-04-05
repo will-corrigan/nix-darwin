@@ -34,6 +34,8 @@ in
     shell = lib.mkIf (builtins.hasAttr "zsh" (host.programs or {})) pkgs.zsh;
   };
 
+  programs.nix-ld.enable = true;
+
   networking.hostName = host.machine.computer_name;
   system.stateVersion = "24.11";
 }
