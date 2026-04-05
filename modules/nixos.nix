@@ -29,5 +29,6 @@ in
 
   # ── NixOS System ───────────────────────────────────────────────────
 
+  networking.hostName = host.machine.computer_name;
   system.stateVersion = "24.11";
 }
