@@ -1,4 +1,4 @@
-{ lib, host, nixos-wsl, ... }:
+{ pkgs, lib, host, nixos-wsl, ... }:
 let
   username = host.machine.username;
   machineType = host.machine.type or "linux";
@@ -28,6 +28,11 @@ in
   };
 
   # ── NixOS System ───────────────────────────────────────────────────
+
+  users.users.${username} = {
+    isNormalUser = true;
+    shell = lib.mkIf (builtins.hasAttr "zsh" (host.programs or {})) pkgs.zsh;
+  };
 
   networking.hostName = host.machine.computer_name;
   system.stateVersion = "24.11";
