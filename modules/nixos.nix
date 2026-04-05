@@ -35,6 +35,7 @@ in
   };
 
   programs.nix-ld.enable = true;
+  time.timeZone = "Europe/London";
 
   networking.hostName = host.machine.computer_name;
   system.stateVersion = "24.11";

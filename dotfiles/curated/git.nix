@@ -8,7 +8,7 @@ let
     if platform == "darwin"
     then "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
     else if platform == "wsl"
-    then "/mnt/c/Users/${winUser}/AppData/Local/1Password/app/8/op-ssh-sign.exe"
+    then "/mnt/c/Users/${winUser}/AppData/Local/Microsoft/WindowsApps/op-ssh-sign.exe"
     else "op-ssh-sign";
 
   sshCommand =
