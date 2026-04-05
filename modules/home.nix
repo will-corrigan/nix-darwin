@@ -46,6 +46,7 @@ in
     home.stateVersion = "24.11";
     home.sessionVariables = sessionVars;
 
+    gtk.gtk4.theme = null;
     imports = enabledImports;
   };
 }
