@@ -14,6 +14,7 @@ in
     enable = true;
     defaultUser = username;
     interop.register = true;
+    docker-desktop.enable = true;
   };
 
   # ── Nix GC & Optimise (systemd format) ─────────────────────────────

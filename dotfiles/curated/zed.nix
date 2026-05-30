@@ -1,9 +1,28 @@
-{ ... }:
+{ lib, font, ... }:
 {
   programs.zed-editor = {
     enable = true;
     package = null;
+    extensions = [
+      "catppuccin"
+      "dockerfile"
+      "gdscript"
+      "git-firefly"
+      "html"
+      "material-icon-theme"
+      "terraform"
+      "toml"
+    ];
     userSettings = {
+      ui_font_family = lib.mkForce font.name;
+      ui_font_size = lib.mkForce 16;
+      ui_font_weight = lib.mkForce 400;
+      buffer_font_family = lib.mkForce font.name;
+      buffer_font_size = lib.mkForce 16;
+      buffer_font_weight = lib.mkForce 400;
+      theme = lib.mkForce "Catppuccin Mocha";
+      icon_theme = lib.mkForce "Material Icon Theme";
+
       telemetry = {
         diagnostics = false;
         metrics = false;
@@ -58,7 +77,9 @@
       };
 
       terminal = {
-        font_size = 14;
+        font_family = lib.mkForce font.name;
+        font_size = 16;
+        font_weight = lib.mkForce 400;
         shell = "system";
         working_directory = "current_project_directory";
         option_as_meta = true;
