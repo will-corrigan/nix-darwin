@@ -18,6 +18,7 @@ in
     onActivation.autoUpdate = true;
     onActivation.upgrade = true;
     onActivation.cleanup = "uninstall";
+    prefix = "/opt/workbrew";
 
     brews = extraBrews;
     casks = integrationCasks ++ extraCasks;
