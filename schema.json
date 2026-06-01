@@ -172,7 +172,8 @@
           "properties": {
             "caps_lock":    { "type": "string", "enum": ["escape", "caps-lock"], "default": "escape", "description": "What Caps Lock does. 'control' planned for v2." },
             "key_repeat":   { "type": "string", "enum": ["slow", "medium", "fast"], "default": "fast" },
-            "repeat_delay": { "type": "string", "enum": ["long", "medium", "short"], "default": "short" }
+            "repeat_delay": { "type": "string", "enum": ["long", "medium", "short"], "default": "short" },
+            "layout":       { "type": "string", "enum": ["us", "british", "british-pc"], "default": "us", "description": "Active keyboard layout (input source)." }
           }
         },
         "dock": {
@@ -182,7 +183,14 @@
             "position":        { "type": "string", "enum": ["left", "bottom", "right"], "default": "bottom" },
             "icon_size":       { "type": "string", "enum": ["small", "medium", "large"], "default": "medium" },
             "auto_hide":       { "type": "boolean", "default": true },
-            "minimize_to_app": { "type": "boolean", "default": true }
+            "minimize_to_app": { "type": "boolean", "default": true },
+            "clear_others":    { "type": "boolean", "default": false, "description": "Empty the right-side dock area (downloads/files/stacks)." },
+            "apps": {
+              "type": "array",
+              "items": { "type": "string" },
+              "default": [],
+              "description": "Apps pinned to the dock (absolute .app paths), in display order."
+            }
           }
         },
         "finder": {
@@ -202,6 +210,11 @@
             "tap_to_click":   { "type": "boolean", "default": true },
             "natural_scroll": { "type": "boolean", "default": false }
           }
+        },
+        "text_replacements": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "System-wide text autocorrect/replacements (e.g. \"@@\" = \"you@example.com\")."
         }
       }
     }

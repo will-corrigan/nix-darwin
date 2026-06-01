@@ -5,6 +5,7 @@ let
   dock = macos.dock or {};
   finder = macos.finder or {};
   trackpad = macos.trackpad or {};
+  textReplacements = macos.text_replacements or {};
 
   capsLockMap = {
     "escape" = true;
@@ -35,6 +36,25 @@ let
     "icons" = "icnv";
     "gallery" = "glyv";
   };
+
+  keyboardLayoutMap = {
+    "us"         = { id = 0;     name = "U.S."; };
+    "british"    = { id = 2;     name = "British"; };
+    "british-pc" = { id = -2351; name = "British-PC"; };
+  };
+  layoutKey = keyboard.layout or "us";
+  layout = keyboardLayoutMap.${layoutKey} or keyboardLayoutMap."us";
+
+  inputSourceEntry = {
+    InputSourceKind = "Keyboard Layout";
+    "KeyboardLayout ID" = layout.id;
+    "KeyboardLayout Name" = layout.name;
+  };
+
+  replacementItems = lib.mapAttrsToList (k: v: { on = 1; replace = k; "with" = v; }) textReplacements;
+
+  dockApps = dock.apps or [];
+  clearOthers = dock.clear_others or false;
 in
 {
   nix.gc = {
@@ -54,6 +74,15 @@ in
   system.defaults = {
     CustomUserPreferences."com.apple.symbolichotkeys".AppleSymbolicHotKeys."64".enabled = false;
     CustomUserPreferences."com.google.Keystone.Agent".checkInterval = 0;
+    CustomUserPreferences."com.apple.HIToolbox" = {
+      AppleEnabledInputSources = [
+        inputSourceEntry
+        { "Bundle ID" = "com.apple.CharacterPaletteIM"; InputSourceKind = "Non Keyboard Input Method"; }
+      ];
+      AppleSelectedInputSources = [ inputSourceEntry ];
+      AppleCurrentKeyboardLayoutInputSourceID = "com.apple.keylayout.${layout.name}";
+    };
+    CustomUserPreferences.NSGlobalDomain.NSUserDictionaryReplacementItems = replacementItems;
 
     NSGlobalDomain = {
       AppleShowAllExtensions = finder.show_extensions or true;
@@ -83,7 +112,8 @@ in
       tilesize = dockSizeMap.${dock.icon_size or "medium"} or 48;
       minimize-to-application = dock.minimize_to_app or true;
       orientation = dock.position or "bottom";
-    };
+    } // (if dockApps != [] then { persistent-apps = dockApps; } else {})
+      // (if clearOthers then { persistent-others = [ ]; } else {});
 
     trackpad = {
       Clicking = trackpad.tap_to_click or true;

@@ -8,7 +8,7 @@ username      = "will"
 [user]
 name   = "Will Corrigan"
 email  = "will-corrigan@users.noreply.github.com"
-ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHx5824VO9jx/mjYyVW8dcxywMn4dSk5KEbD3Eq2kCJ8"
+ssh_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFgiyIYwcXW7FTDzIXcviy0JEugrzGHk4R8KoFvmazy3"
 
 [appearance]
 font      = "monaspace-neon"
@@ -41,12 +41,25 @@ casks = ["1password", "claude-code", "discord", "ghostty", "google-chrome", "gcl
 caps_lock    = "escape"
 key_repeat   = "fast"
 repeat_delay = "short"
+layout       = "british-pc"
 
 [macos.dock]
 position        = "bottom"
 icon_size       = "medium"
 auto_hide       = true
 minimize_to_app = true
+clear_others    = true
+apps = [
+  "/System/Applications/System Settings.app",
+  "/Applications/Zen.app",
+  "/Applications/1Password.app",
+  "/Applications/Visual Studio Code.app",
+  "/Applications/Slack.app",
+  "/Applications/Discord.app",
+  "/Applications/Spotify.app",
+  "/Applications/Ghostty.app",
+  "/Applications/Zed.app",
+]
 
 [macos.finder]
 default_view    = "list"
@@ -57,3 +70,6 @@ show_hidden     = true
 [macos.trackpad]
 tap_to_click   = true
 natural_scroll = false
+
+[macos.text_replacements]
+"@@" = "will@contextfab.ai"
