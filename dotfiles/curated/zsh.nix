@@ -2,7 +2,7 @@
 let
   rebuildCmd =
     if platform == "darwin"
-    then "sudo nix flake update --flake /etc/nix-darwin && nh darwin switch /etc/nix-darwin"
+    then "nix flake update --flake /etc/nix-darwin && nh darwin switch /etc/nix-darwin"
     else "sudo nix flake update --flake /etc/nixos && nh os switch /etc/nixos";
 in
 {

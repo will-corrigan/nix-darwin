@@ -47,7 +47,8 @@ in
     home.stateVersion = "24.11";
     home.sessionVariables = sessionVars;
 
-    gtk.gtk4.theme = null;
+    stylix.targets.zed.enable = false;
+
     imports = enabledImports;
   };
 }

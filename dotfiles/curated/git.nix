@@ -62,8 +62,8 @@ in
     enable = true;
     enableDefaultConfig = false;
   } // (if signing == "1password" && identityAgentPath != null then {
-    matchBlocks."*" = {
-      extraOptions.IdentityAgent = identityAgentPath;
+    settings."*" = {
+      IdentityAgent = identityAgentPath;
     };
   } else {});
 }

@@ -29,6 +29,7 @@ in
   stylix = {
     enable = true;
     autoEnable = true;
+    enableReleaseChecks = false;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/${themeName}.yaml";
     image = wallpaperPath;
     fonts = {

@@ -18,6 +18,7 @@ in
     onActivation.autoUpdate = true;
     onActivation.upgrade = true;
     onActivation.cleanup = "uninstall";
+    onActivation.extraFlags = [ "--force" ];
     prefix = "/opt/workbrew";
 
     brews = extraBrews;
