@@ -2,7 +2,11 @@
 let
   extraPkgs = host.extra_packages or {};
   extraBrews = extraPkgs.brews or [];
-  extraCasks = extraPkgs.casks or [];
+  extraCasks = map (c:
+    if c == "discord"
+    then { name = "discord"; args.appdir = "/Users/will/Applications"; }
+    else c
+  ) (extraPkgs.casks or []);
 
   integrations = host.integrations or {};
   signing = integrations.ssh_signing or null;

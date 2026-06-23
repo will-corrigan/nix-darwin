@@ -1,11 +1,16 @@
-{ pkgs, lib, host, ... }:
+{
+  pkgs,
+  lib,
+  host,
+  ...
+}:
 let
-  macos = host.macos or {};
-  keyboard = macos.keyboard or {};
-  dock = macos.dock or {};
-  finder = macos.finder or {};
-  trackpad = macos.trackpad or {};
-  textReplacements = macos.text_replacements or {};
+  macos = host.macos or { };
+  keyboard = macos.keyboard or { };
+  dock = macos.dock or { };
+  finder = macos.finder or { };
+  trackpad = macos.trackpad or { };
+  textReplacements = macos.text_replacements or { };
 
   capsLockMap = {
     "escape" = true;
@@ -38,9 +43,18 @@ let
   };
 
   keyboardLayoutMap = {
-    "us"         = { id = 0;     name = "U.S."; };
-    "british"    = { id = 2;     name = "British"; };
-    "british-pc" = { id = -2351; name = "British-PC"; };
+    "us" = {
+      id = 0;
+      name = "U.S.";
+    };
+    "british" = {
+      id = 2;
+      name = "British";
+    };
+    "british-pc" = {
+      id = -2351;
+      name = "British-PC";
+    };
   };
   layoutKey = keyboard.layout or "us";
   layout = keyboardLayoutMap.${layoutKey} or keyboardLayoutMap."us";
@@ -51,15 +65,23 @@ let
     "KeyboardLayout Name" = layout.name;
   };
 
-  replacementItems = lib.mapAttrsToList (k: v: { on = 1; replace = k; "with" = v; }) textReplacements;
+  replacementItems = lib.mapAttrsToList (k: v: {
+    on = 1;
+    replace = k;
+    "with" = v;
+  }) textReplacements;
 
-  dockApps = dock.apps or [];
+  dockApps = dock.apps or [ ];
   clearOthers = dock.clear_others or false;
 in
 {
   nix.gc = {
     automatic = true;
-    interval = { Weekday = 0; Hour = 3; Minute = 0; };
+    interval = {
+      Weekday = 0;
+      Hour = 3;
+      Minute = 0;
+    };
     options = "--delete-older-than 7d";
   };
   nix.optimise.automatic = true;
@@ -77,7 +99,10 @@ in
     CustomUserPreferences."com.apple.HIToolbox" = {
       AppleEnabledInputSources = [
         inputSourceEntry
-        { "Bundle ID" = "com.apple.CharacterPaletteIM"; InputSourceKind = "Non Keyboard Input Method"; }
+        {
+          "Bundle ID" = "com.apple.CharacterPaletteIM";
+          InputSourceKind = "Non Keyboard Input Method";
+        }
       ];
       AppleSelectedInputSources = [ inputSourceEntry ];
       AppleCurrentKeyboardLayoutInputSourceID = "com.apple.keylayout.${layout.name}";
@@ -112,8 +137,9 @@ in
       tilesize = dockSizeMap.${dock.icon_size or "medium"} or 48;
       minimize-to-application = dock.minimize_to_app or true;
       orientation = dock.position or "bottom";
-    } // (if dockApps != [] then { persistent-apps = dockApps; } else {})
-      // (if clearOthers then { persistent-others = [ ]; } else {});
+    }
+    // (if dockApps != [ ] then { persistent-apps = dockApps; } else { })
+    // (if clearOthers then { persistent-others = [ ]; } else { });
 
     trackpad = {
       Clicking = trackpad.tap_to_click or true;

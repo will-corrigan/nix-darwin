@@ -55,7 +55,7 @@ apps = [
   "/Applications/1Password.app",
   "/Applications/Visual Studio Code.app",
   "/Applications/Slack.app",
-  "/Applications/Discord.app",
+  "/Users/will/Applications/Discord.app",
   "/Applications/Spotify.app",
   "/Applications/Ghostty.app",
   "/Applications/Zed.app",
