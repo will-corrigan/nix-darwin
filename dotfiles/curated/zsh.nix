@@ -33,6 +33,8 @@ in
       glog = "git log --oneline --graph --decorate";
 
       kube-stg = "aws login && aws eks update-kubeconfig --name contextfab-stg-infra-eks-cluster --region eu-west-1 --alias stg";
+
+      assume = "source assume";
     };
     initContent = ''
       export PATH="$HOME/.rd/bin:$PATH"
